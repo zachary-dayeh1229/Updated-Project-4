@@ -310,22 +310,23 @@ class Cell:
 
     def draw(self):
         font = pygame.font.Font(None, 300)
-        number_one = font.render('1', 0, (193, 105, 225))
-        number_two = font.render('2', 0, (193, 105, 225))
-        number_three = font.render('3', 0, (193, 105, 225))
-        number_four = font.render('4', 0, (193, 105, 225))
-        number_five = font.render('5', 0, (193, 105, 225))
-        number_six = font.render('6', 0, (193, 105, 225))
-        number_seven = font.render('7', 0, (193, 105, 225))
-        number_eight = font.render('8', 0, (193, 105, 225))
-        number_nine = font.render('9', 0, (193, 105, 225))
+        purple = (193, 105, 225)
+        number_one = font.render('1', 0, purple)
+        number_two = font.render('2', 0, purple)
+        number_three = font.render('3', 0, purple)
+        number_four = font.render('4', 0, purple)
+        number_five = font.render('5', 0, purple)
+        number_six = font.render('6', 0, purple)
+        number_seven = font.render('7', 0, purple)
+        number_eight = font.render('8', 0, purple)
+        number_nine = font.render('9', 0, purple)
         number_list = [number_one, number_two, number_three, number_four, number_five, number_six, number_seven,
                        number_eight, number_nine]
         for i in number_list:
             if self.selected == False:
                 number_rect = i.get_rect(
                     center=(self.width // 2 + self.width * self.col, self.height // 2 + self.height * self.row))
-                screen.blit(number_rect, i)
+                self.screen.blit(number_rect, i)
             if self.selected == True:
                 continue
 
