@@ -296,7 +296,18 @@ def generate_sudoku(size, removed):
 
 
 class Cell:
-    def __init__(self, value, row, col, screen):
+
+    black = (0, 0, 0)  # sets variables for later use.
+    width = 630
+    board_height = 720
+    game_height = 630
+    pink = (244, 194, 194)
+    num_rows = 9
+    num_cols = 9
+    cell_length = 70
+    purple = (193, 105, 225)
+
+    def __init__(self, value, row, col, screen= pygame.display.set_mode((width, board_height))):
         self.value = value
         self.row = row
         self.col = col
@@ -309,26 +320,28 @@ class Cell:
         self.value = value
 
     def draw(self):
-        font = pygame.font.Font(None, 300)
-        purple = (193, 105, 225)
-        number_one = font.render('1', 0, purple)
-        number_two = font.render('2', 0, purple)
-        number_three = font.render('3', 0, purple)
-        number_four = font.render('4', 0, purple)
-        number_five = font.render('5', 0, purple)
-        number_six = font.render('6', 0, purple)
-        number_seven = font.render('7', 0, purple)
-        number_eight = font.render('8', 0, purple)
-        number_nine = font.render('9', 0, purple)
+        font = pygame.font.Font(None, 100)
+        number_one = font.render('1', 0, self.purple)
+        number_two = font.render('2', 0, self.purple)
+        number_three = font.render('3', 0, self.purple)
+        number_four = font.render('4', 0, self.purple)
+        number_five = font.render('5', 0, self.purple)
+        number_six = font.render('6', 0, self.purple)
+        number_seven = font.render('7', 0, self.purple)
+        number_eight = font.render('8', 0, self.purple)
+        number_nine = font.render('9', 0, self.purple)
         number_list = [number_one, number_two, number_three, number_four, number_five, number_six, number_seven,
                        number_eight, number_nine]
-        for i in number_list:
-            if self.selected == False:
-                number_rect = i.get_rect(
-                    center=(self.width // 2 + self.width * self.col, self.height // 2 + self.height * self.row))
-                self.screen.blit(number_rect, i)
-            if self.selected == True:
-                continue
+        # for i in number_list:
+        #     if self.selected == False:
+        #         number_rect = i.get_rect(
+        #             center=(self.width // 2 + self.width * self.col,
+        #             self.game_height // 2 + self.game_height * self.row))
+        #         self.screen.blit(number_rect, i)
+        #     if self.selected == True:
+        #         continue
+        number_rect = number_one.get_rect(center=(315, 315))  # for testing purposes.
+        self.screen.blit(number_one, number_rect)
 
 
 class Board:
@@ -364,11 +377,14 @@ class Board:
             pygame.draw.line(self.screen, self.black, (i * self.cell_length, 0), (i * self.cell_length, self.width))
 
         # bolded lines
+        pygame.draw.line(self.screen, self.black, (0, 0), (self.width, 0), 4)
         pygame.draw.line(self.screen, self.black, (0, self.cell_length * 3), (self.width, self.cell_length * 3), 4)
         pygame.draw.line(self.screen, self.black, (0, self.cell_length * 6), (self.width, self.cell_length * 6), 4)
         pygame.draw.line(self.screen, self.black, (0, self.cell_length * 9), (self.width, self.cell_length * 9), 4)
+        pygame.draw.line(self.screen, self.black, (0, 0), (0, self.width), 4)
         pygame.draw.line(self.screen, self.black, (self.cell_length * 3, 0), (self.cell_length * 3, self.width), 4)
         pygame.draw.line(self.screen, self.black, (self.cell_length * 6, 0), (self.cell_length * 6, self.width), 4)
+        pygame.draw.line(self.screen, self.black, (self.cell_length * 9, 0), (self.cell_length * 9, self.width), 4)
 
 
     def select(self, row, col):

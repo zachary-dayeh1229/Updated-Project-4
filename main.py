@@ -5,6 +5,8 @@ import sys
 
 board = sudoku_generator.Board(630, 630)  # displays the board.
 board.draw()
+cell = sudoku_generator.Cell(0, 0, 0)  # for testing purposes.
+cell.draw()
 
 def start_screen(screen):
     title_font = pygame.font.Font(None, 100)  # title font
