@@ -2,36 +2,9 @@ import pygame
 import sudoku_generator
 import sys
 
-pygame.init()  # initialize pygame
-pygame.display.set_caption("Sudoku")  # give the terminal a title.
 
-black = (0, 0, 0)  # sets variables for later use.
-width = 630
-height = 720
-pink = (244, 194, 194)
-num_rows = 9
-num_cols = 9
-cell_length = 70
-
-screen = pygame.display.set_mode((width, height))  # establishes window size.
-screen.fill(pink)  # changes window color.
-
-def draw():
-
-    # horizontal lines
-    for i in range(0, 10):
-        pygame.draw.line(screen, black, (0, i * cell_length), (width, i * cell_length))
-
-    # vertical lines
-    for i in range(0, 10):
-        pygame.draw.line(screen, black, (i * cell_length, 0), (i * cell_length, width))
-
-    # bolded lines
-    pygame.draw.line(screen, black, (0, cell_length * 3), (width, cell_length * 3), 4)
-    pygame.draw.line(screen, black, (0, cell_length * 6), (width, cell_length * 6), 4)
-    pygame.draw.line(screen, black, (cell_length * 3, 0), (cell_length * 3, width), 4)
-    pygame.draw.line(screen, black, (cell_length * 6, 0), (cell_length * 6, width), 4)
-
+board = sudoku_generator.Board(630, 630)  # displays the board.
+board.draw()
 
 def start_screen(screen):
     title_font = pygame.font.Font(None, 100)  # title font
@@ -75,7 +48,7 @@ def start_screen(screen):
 #     game_over_font = pygame.font.Font(None, 40)
 #     screen.fill(197, 161, 196)
 
-start_screen(screen)  # FIXME
+
 
 while True:  # keeps the window open until the user exits.
     # event handler

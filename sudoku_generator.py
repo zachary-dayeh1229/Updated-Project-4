@@ -333,14 +333,43 @@ class Cell:
 
 class Board:
 
-    def __init__(self, width, height, screen, difficulty):
+    black = (0, 0, 0)  # sets variables for later use.
+    width = 630
+    board_height = 720
+    game_height = 630
+    pink = (244, 194, 194)
+    num_rows = 9
+    num_cols = 9
+    cell_length = 70
+
+    pygame.init()  # initialize pygame
+    pygame.display.set_caption("Sudoku")  # give the terminal a title.
+
+    def __init__(self, width, height, screen= pygame.display.set_mode((width, board_height))):  # initializes.
         self.width = width
         self.height = height
         self.screen = screen
-        self.difficulty = difficulty
+        # self.difficulty = difficulty
 
-    def draw(self):
-        pass
+        screen.fill(self.pink)  # changes window color.
+
+
+    def draw(self):  # draws lines for the game.
+        # horizontal lines
+        for i in range(0, 10):
+            pygame.draw.line(self.screen, self.black, (0, i * self.cell_length), (self.width, i * self.cell_length))
+
+        # vertical lines
+        for i in range(0, 10):
+            pygame.draw.line(self.screen, self.black, (i * self.cell_length, 0), (i * self.cell_length, self.width))
+
+        # bolded lines
+        pygame.draw.line(self.screen, self.black, (0, self.cell_length * 3), (self.width, self.cell_length * 3), 4)
+        pygame.draw.line(self.screen, self.black, (0, self.cell_length * 6), (self.width, self.cell_length * 6), 4)
+        pygame.draw.line(self.screen, self.black, (0, self.cell_length * 9), (self.width, self.cell_length * 9), 4)
+        pygame.draw.line(self.screen, self.black, (self.cell_length * 3, 0), (self.cell_length * 3, self.width), 4)
+        pygame.draw.line(self.screen, self.black, (self.cell_length * 6, 0), (self.cell_length * 6, self.width), 4)
+
 
     def select(self, row, col):
         pass
@@ -373,4 +402,4 @@ class Board:
         pass
 
 
-generate_sudoku(9, 40)
+
