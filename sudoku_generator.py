@@ -291,12 +291,13 @@ def generate_sudoku(size, removed):
     board = sudoku.get_board()
     sudoku.remove_cells()
     board = sudoku.get_board()
-    sudoku.print_board() # for testing purposes
+    # sudoku.print_board() # for testing purposes
     return board
 
 
 class Cell:
 
+    board = generate_sudoku(9, 40)  # test with medium.
     black = (0, 0, 0)  # sets variables for later use.
     width = 630
     board_height = 720
@@ -307,31 +308,31 @@ class Cell:
     cell_length = 70
     purple = (193, 105, 225)
 
-    def __init__(self, value, row, col, screen= pygame.display.set_mode((width, board_height))):
+    def __init__(self, value, row, col, screen= pygame.display.set_mode((width, board_height))):  # initialize.
         self.value = value
         self.row = row
         self.col = col
         self.screen = screen
 
-    def set_cell_value(self, value):
+    def set_cell_value(self, value):  # basic setter.
         self.value = value
 
-    def set_sketched_value(self, value):
+    def set_sketched_value(self, value):  # basic setter.
         self.value = value
 
-    def draw(self):
-        font = pygame.font.Font(None, 100)
-        number_one = font.render('1', 0, self.purple)
-        number_two = font.render('2', 0, self.purple)
-        number_three = font.render('3', 0, self.purple)
-        number_four = font.render('4', 0, self.purple)
-        number_five = font.render('5', 0, self.purple)
-        number_six = font.render('6', 0, self.purple)
-        number_seven = font.render('7', 0, self.purple)
-        number_eight = font.render('8', 0, self.purple)
-        number_nine = font.render('9', 0, self.purple)
-        number_list = [number_one, number_two, number_three, number_four, number_five, number_six, number_seven,
-                       number_eight, number_nine]
+    def draw(self):  # draws all the values in the cells.
+        font = pygame.font.Font(None, 50)
+        # number_one = font.render('1', 0, self.purple)
+        # number_two = font.render('2', 0, self.purple)
+        # number_three = font.render('3', 0, self.purple)
+        # number_four = font.render('4', 0, self.purple)
+        # number_five = font.render('5', 0, self.purple)
+        # number_six = font.render('6', 0, self.purple)
+        # number_seven = font.render('7', 0, self.purple)
+        # number_eight = font.render('8', 0, self.purple)
+        # number_nine = font.render('9', 0, self.purple)
+        # number_list = [number_one, number_two, number_three, number_four, number_five, number_six, number_seven,
+        #                number_eight, number_nine]
         # for i in number_list:
         #     if self.selected == False:
         #         number_rect = i.get_rect(
@@ -340,8 +341,13 @@ class Cell:
         #         self.screen.blit(number_rect, i)
         #     if self.selected == True:
         #         continue
-        number_rect = number_one.get_rect(center=(315, 315))  # for testing purposes.
-        self.screen.blit(number_one, number_rect)
+
+        for i in range(self.num_rows):
+            for j in range(self.num_cols):  # iterates over every item in board.
+                if self.board[i][j] != 0:  # if not == 0.
+                    empty_board = font.render(str(self.board[i][j]), True, self.black)  # render text of element.
+                    self.screen.blit(empty_board,  # display the element onto the board.
+                                     (i*self.cell_length + 27, j*self.cell_length + 23))  # the numbers were odd idk why
 
 
 class Board:
