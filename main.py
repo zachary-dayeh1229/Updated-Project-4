@@ -2,6 +2,7 @@ import pygame
 import sudoku_generator
 import sys
 
+# I hope this works.
 
 board = sudoku_generator.Board(630, 630)  # displays the board.
 board.draw()

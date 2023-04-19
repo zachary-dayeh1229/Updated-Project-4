@@ -2,6 +2,7 @@ import math, random  # imports every file we need to make the project.
 import sys
 import pygame
 
+# hopefully this works.
 
 class SudokuGenerator:
 
