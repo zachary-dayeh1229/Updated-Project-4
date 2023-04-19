@@ -321,7 +321,6 @@ class Cell:
         self.value = value
 
     def draw(self):  # draws all the values in the cells.
-        font = pygame.font.Font(None, 50)
         # number_one = font.render('1', 0, self.purple)
         # number_two = font.render('2', 0, self.purple)
         # number_three = font.render('3', 0, self.purple)
@@ -341,7 +340,7 @@ class Cell:
         #         self.screen.blit(number_rect, i)
         #     if self.selected == True:
         #         continue
-
+        font = pygame.font.Font(None, 50)
         for i in range(self.num_rows):
             for j in range(self.num_cols):  # iterates over every item in board.
                 if self.board[i][j] != 0:  # if not == 0.
