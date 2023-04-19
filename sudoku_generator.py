@@ -297,7 +297,6 @@ def generate_sudoku(size, removed):
 
 class Cell:
 
-    board = generate_sudoku(9, 40)  # test with medium.
     black = (0, 0, 0)  # sets variables for later use.
     width = 630
     board_height = 720
@@ -307,46 +306,37 @@ class Cell:
     num_cols = 9
     cell_length = 70
     purple = (193, 105, 225)
+    red = (255, 0, 0)
+    grey = (128, 128, 128)
 
     def __init__(self, value, row, col, screen= pygame.display.set_mode((width, board_height))):  # initialize.
         self.value = value
         self.row = row
         self.col = col
         self.screen = screen
+        self.selected = False
+        self.sketched_value = 0
 
     def set_cell_value(self, value):  # basic setter.
         self.value = value
 
     def set_sketched_value(self, value):  # basic setter.
-        self.value = value
+        self.sketched_value = value
 
     def draw(self):  # draws all the values in the cells.
-        # number_one = font.render('1', 0, self.purple)
-        # number_two = font.render('2', 0, self.purple)
-        # number_three = font.render('3', 0, self.purple)
-        # number_four = font.render('4', 0, self.purple)
-        # number_five = font.render('5', 0, self.purple)
-        # number_six = font.render('6', 0, self.purple)
-        # number_seven = font.render('7', 0, self.purple)
-        # number_eight = font.render('8', 0, self.purple)
-        # number_nine = font.render('9', 0, self.purple)
-        # number_list = [number_one, number_two, number_three, number_four, number_five, number_six, number_seven,
-        #                number_eight, number_nine]
-        # for i in number_list:
-        #     if self.selected == False:
-        #         number_rect = i.get_rect(
-        #             center=(self.width // 2 + self.width * self.col,
-        #             self.game_height // 2 + self.game_height * self.row))
-        #         self.screen.blit(number_rect, i)
-        #     if self.selected == True:
-        #         continue
         font = pygame.font.Font(None, 50)
-        for i in range(self.num_rows):
-            for j in range(self.num_cols):  # iterates over every item in board.
-                if self.board[i][j] != 0:  # if not == 0.
-                    empty_board = font.render(str(self.board[i][j]), True, self.black)  # render text of element.
-                    self.screen.blit(empty_board,  # display the element onto the board.
-                                     (i*self.cell_length + 27, j*self.cell_length + 23))  # the numbers were odd idk why
+        if self.value != 0:  # if not == 0.
+            empty_board = font.render(str(self.value), True, self.black)  # render text of element.
+            cell_rect = empty_board.get_rect(center = (self.row*self.cell_length + self.cell_length//2, self.col*self.cell_length + self.cell_length//2))
+            self.screen.blit(empty_board, cell_rect)
+
+        elif self.sketched_value != 0 and self.value == 0:  # if not == 0.
+            empty_board = font.render(str(self.sketched_value), True, self.grey)  # render text of element.
+            self.screen.blit(empty_board, (self.col*self.cell_length + 5, self.row*self.cell_length + 5))
+
+
+        if self.selected:
+            pygame.draw.rect(self.screen, self.red, pygame.Rect((self.row * self.cell_length, self.col * self.cell_length), (self.cell_length, self.cell_length)), 2)
 
 
 class Board:
@@ -359,6 +349,13 @@ class Board:
     num_rows = 9
     num_cols = 9
     cell_length = 70
+    red = (255, 0, 0)
+    board = generate_sudoku(9, 40)
+    for row in board:
+        for col in row:
+            print(col, end=" ")
+        print()
+
 
     pygame.init()  # initialize pygame
     pygame.display.set_caption("Sudoku")  # give the terminal a title.
@@ -368,11 +365,19 @@ class Board:
         self.height = height
         self.screen = screen
         # self.difficulty = difficulty
+        self.cells = []
 
-        screen.fill(self.pink)  # changes window color.
+        for i in range(9):
+            row = []
+            for j in range(9):
+                row.append(Cell(self.board[i][j], j, i, self.screen))
+            self.cells.append(row)
 
 
     def draw(self):  # draws lines for the game.
+
+        self.screen.fill(self.pink)  # changes window color.
+
         # horizontal lines
         for i in range(0, 10):
             pygame.draw.line(self.screen, self.black, (0, i * self.cell_length), (self.width, i * self.cell_length))
@@ -391,12 +396,21 @@ class Board:
         pygame.draw.line(self.screen, self.black, (self.cell_length * 6, 0), (self.cell_length * 6, self.width), 4)
         pygame.draw.line(self.screen, self.black, (self.cell_length * 9, 0), (self.cell_length * 9, self.width), 4)
 
+        for row in self.cells:
+            for cell in row:  # iterates over every item in board.
+                cell.draw()
 
     def select(self, row, col):
-        pass
+        self.cells[row][col].selected = True
 
-    def click(self, row, col):
-        pass
+    def check_avaialable(self, board, row, col):
+        return board[row][col] == 0
+
+    def click(self, x, y):
+        row = y // self.cell_length
+        col = x // self.cell_length
+        self.select(row, col)
+        return row, col
 
     def clear(self):
         pass
@@ -422,5 +436,83 @@ class Board:
     def check_board(self):
         pass
 
+    def start_screen(screen):
+        title_font = pygame.font.Font(None, 150)  # title font
+        button_font = pygame.font.Font(None, 40)  # button font
 
+        screen.fill((220, 220, 220))  # background color
+        title_surface = title_font.render("Sudoku", 0, (199, 75, 120))
+        title_rectangle = title_surface.get_rect(center=(305, 230))
+        screen.blit(title_surface, title_rectangle)  # render title
 
+        easy_text = button_font.render("Easy", 0, (255, 255, 240))
+        medium_text = button_font.render("Medium", 0, (255, 255, 240))
+        hard_text = button_font.render("Hard", 0, (255, 255, 240))
+        quit_text = button_font.render("Quit", 0, (255, 255, 240))
+
+        # button background color and text
+        easy_surface = pygame.Surface((easy_text.get_size()[0] + 20, easy_text.get_size()[1] + 20))
+        easy_surface.fill((255, 188, 217))
+        easy_surface.blit(easy_text, (10, 10))
+
+        medium_surface = pygame.Surface((medium_text.get_size()[0] + 20, medium_text.get_size()[1] + 20))
+        medium_surface.fill((255, 188, 217))
+        medium_surface.blit(medium_text, (10, 10))
+
+        hard_surface = pygame.Surface((hard_text.get_size()[0] + 20, hard_text.get_size()[1] + 20))
+        hard_surface.fill((255, 188, 217))
+        hard_surface.blit(hard_text, (10, 10))
+
+        quit_surface = pygame.Surface((quit_text.get_size()[0] + 20, quit_text.get_size()[1] + 20))
+        quit_surface.fill((255, 188, 217))
+        quit_surface.blit(quit_text, (10, 10))
+
+        # button rectangle
+        easy_rect = easy_surface.get_rect(center=(175, 330))
+        medium_rect = medium_surface.get_rect(center=(300, 330))
+        hard_rect = hard_surface.get_rect(center=(425, 330))
+        quit_rect = quit_surface.get_rect(center=(300, 400))
+
+        # draw the buttons
+        screen.blit(easy_surface, easy_rect)
+        screen.blit(medium_surface, medium_rect)
+        screen.blit(hard_surface, hard_rect)
+        screen.blit(quit_surface, quit_rect)
+        user_difficulty = 0
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if easy_rect.collidepoint(event.pos):
+                        user_difficulty = 30
+                        print(user_difficulty)
+                    elif medium_rect.collidepoint(event.pos):
+                        user_difficulty = 40
+                        print(user_difficulty)
+                    elif hard_rect.collidepoint(event.pos):
+                        user_difficulty = 50
+                        print(user_difficulty)
+                    elif quit_rect.collidepoint(event.pos):
+                        sys.exit()
+            pygame.display.update()
+
+    def draw_game_over_screen(player, screen):
+        screen.fill((220, 220, 220))
+        if player != 0:
+            end_text = f"You Win"
+        else:
+            end_text = "No one Wins"
+        game_over_font = pygame.font.Font(None, 40)
+        end_surf = game_over_font.render(end_text, 0, (199, 75, 120))
+        end_rect = end_surf.get_rect(center=(305, 230))
+        screen.blit(end_surf, end_rect)
+
+        while True:  # keeps the window open until the user exits.
+            # event handler
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.QUIT
+                    sys.exit()
+
+            pygame.display.update()
