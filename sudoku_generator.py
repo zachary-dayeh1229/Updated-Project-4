@@ -434,7 +434,7 @@ class Board:
         pass
 
     def check_board(self):
-        pass
+        return True
 
     def start_screen(screen):
         title_font = pygame.font.Font(None, 150)  # title font
