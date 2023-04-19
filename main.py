@@ -57,7 +57,9 @@ while True:  # keeps the window open until the user exits.
     for event in pygame.event.get():
          if event.type == pygame.QUIT:
             pygame.QUIT()
-
             sys.exit()
+
+        # if event.type == pygame.MOUSEBUTTONDOWN:
+         #   print(event.pos)
 
     pygame.display.update()  # updates all changes.

@@ -420,7 +420,7 @@ class Board:
         pass
 
     def check_board(self):
-        pass
+        return True
 
 
 
