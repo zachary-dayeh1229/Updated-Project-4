@@ -401,6 +401,8 @@ class Board:
         self.reset_surface = pygame.Surface((self.reset_text.get_size()[0] + 20, self.reset_text.get_size()[1] + 20))
         self.reset_surface.fill((181, 229, 200))
         self.reset_surface.blit(self.reset_text, (10, 10))
+
+
         # creates restart button
         restart_surface = pygame.Surface((self.restart_text.get_size()[0] + 20, self.restart_text.get_size()[1] + 20))
         restart_surface.fill((176, 224, 230))
@@ -452,7 +454,10 @@ class Board:
         return row, col
 
     def clear(self):
-        pass
+        for i in range(9):
+            for j in range(9):
+                self.cells[i][j].value = self.board[i][j]
+                self.cells[i][j].sketched_value = self.board[i][j]
 
     def sketch(self, value):
         pass

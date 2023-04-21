@@ -27,7 +27,7 @@ while True:  # keeps the window open until the user exits.
                 board = sudoku_generator.Board(630, 630, board.difficulty)
                 break
             if board.reset_rect.collidepoint(event.pos):
-                board.clear
+                board.clear()
 
             # if board.easy_rect.collidepoint(event.pos):
             #     board.difficulty = 30
@@ -43,11 +43,12 @@ while True:  # keeps the window open until the user exits.
             #
             # elif board.quit_rect.collidepoint(event.pos):
             #     sys.exit()
-            board.cells[previous_click[0]][previous_click[1]].selected = False
             x, y = event.pos
-            row, col = board.click(x, y)
-            previous_click = [row, col]
-            board.draw()  # overwrites the box to something else.
+            if y <= 630:
+                board.cells[previous_click[0]][previous_click[1]].selected = False
+                row, col = board.click(x, y)
+                previous_click = [row, col]
+                board.draw()  # overwrites the box to something else.
 
         if event.type == pygame.KEYDOWN:  # if you select a key.
 
