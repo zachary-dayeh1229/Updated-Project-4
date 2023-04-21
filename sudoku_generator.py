@@ -477,8 +477,33 @@ class Board:
     def find_empty(self):
         pass
 
+    def is_valid(numbers):
+        return set(numbers) == set(range(1, 10))
     def check_board(self):
+        # Check each row
+        for row in self.cells:
+            for self.cell in row:
+                if not Board.is_valid(row):
+                    return False
 
+        # Check each column
+        for i in range(9):
+            column = [self.cells[j][i] for j in range(9)]
+            if not Board.is_valid(column):
+                return False
+
+        # Check each square
+        for i in range(0, 9, 3):
+            for j in range(0, 9, 3):
+                square = [self.cells[x][y] for x in range(i, i + 3) for y in range(j, j + 3)]
+                if not Board.is_valid(square):
+                    return False
+
+        # If we get here, the board is valid
+        return True
+
+
+        '''
         our_list = []
         #
         # for row in completed_board:
@@ -509,7 +534,7 @@ class Board:
         #             print(False)
         #             return False
         # return True
-
+        '''
     def start_screen(self):
         title_font = pygame.font.Font(None, 150)  # title font
         button_font = pygame.font.Font(None, 40)  # button font

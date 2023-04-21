@@ -6,7 +6,7 @@ import sys
 
 board = sudoku_generator.Board(630, 630, 0)  # displays the board.
 board.start_screen()
-board = sudoku_generator.Board(630, 630, board.difficulty)
+board = sudoku_generator.Board(630, 630, 1)
 board.draw()
 previous_click = [0, 0]  # initializes previous value
 
@@ -129,12 +129,13 @@ while True:  # keeps the window open until the user exits.
                     board.cells[previous_click[0]][previous_click[1]].value = board.cells[previous_click[0]][previous_click[1]].sketched_value
                     board.draw()
 
-                    if board.is_full():
-                        print()
-                        # board.update_board()
-                        if board.check_board() is True:
-                            print("True")
-                        else:
-                            print("False") # lose
-
+            if board.is_full():
+                board.draw_game_over_screen()
+                '''
+                # board.update_board()
+                if board.check_board() is True:
+                    print("True")
+                else:
+                    print("False") # lose
+                '''
     pygame.display.update()  # updates all changes.
