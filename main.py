@@ -4,21 +4,19 @@ import sys
 
 # I hope this works.
 
-board = sudoku_generator.Board(630, 630)  # displays the board.
+board = sudoku_generator.Board(630, 630, 0)
+board.start_screen()
+board = sudoku_generator.Board(630, 630, board.difficulty)  # displays the board.
 board.draw()
 previous_click = [0, 0]  # initializes previous value
 
-
-
-
 while True:  # keeps the window open until the user exits.
     # event handler
-
     for event in pygame.event.get():  # if you exit the window.
         if event.type == pygame.QUIT:
             pygame.QUIT()
             sys.exit()
-
+        board.draw()
         if event.type == pygame.MOUSEBUTTONDOWN:  # if you click the mouse.
             board.cells[previous_click[0]][previous_click[1]].selected = False
             x, y = event.pos
@@ -67,7 +65,7 @@ while True:  # keeps the window open until the user exits.
             if event.key == pygame.K_1:
                 board.cells[previous_click[0]][previous_click[1]].sketched_value = 1
                 board.draw()
-
-
+            if board.is_full():
+                board.draw_game_over_screen()
 
     pygame.display.update()  # updates all changes.

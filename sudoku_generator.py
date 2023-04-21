@@ -351,23 +351,22 @@ class Board:
     num_cols = 9
     cell_length = 70
     red = (255, 0, 0)
-    board = generate_sudoku(9, 40)
-    for row in board:
-        for col in row:
-            print(col, end=" ")
-        print()
 
 
     pygame.init()  # initialize pygame
     pygame.display.set_caption("Sudoku")  # give the terminal a title.
 
-    def __init__(self, width, height, screen= pygame.display.set_mode((width, board_height))):  # initializes.
+    def __init__(self, width, height,difficulty, screen= pygame.display.set_mode((width, board_height))):  # initializes.
         self.width = width
         self.height = height
         self.screen = screen
-        # self.difficulty = difficulty
+        self.difficulty = difficulty
+        self.board = generate_sudoku(9, self.difficulty)
+        for row in self.board:
+            for col in row:
+                print(col, end=" ")
+            print()
         self.cells = []
-
         for i in range(9):
             row = []
             for j in range(9):
@@ -375,9 +374,10 @@ class Board:
             self.cells.append(row)
 
 
+
     def draw(self):  # draws lines for the game.
 
-        self.screen.fill(self.pink)  # changes window color.
+        self.screen.fill((251,224,231))  # changes window color.
 
         # horizontal lines
         for i in range(0, 10):
@@ -401,6 +401,56 @@ class Board:
             for cell in row:  # iterates over every item in board.
                 cell.draw()
 
+        # creates buttons
+        button_font = pygame.font.Font(None, 40)  # button font
+        reset_text = button_font.render("Reset", 0, (255, 255, 240))
+        restart_text = button_font.render("Restart", 0, (255, 255, 240))
+        exit_text = button_font.render("Exit", 0, (255, 255, 240))
+
+        # button background color and text
+        # creates reset button
+        reset_surface = pygame.Surface((reset_text.get_size()[0] + 20, reset_text.get_size()[1] + 20))
+        reset_surface.fill((181, 229, 200))
+        reset_surface.blit(reset_text, (10, 10))
+        # creates restart button
+        restart_surface = pygame.Surface((restart_text.get_size()[0] + 20, restart_text.get_size()[1] + 20))
+        restart_surface.fill((176, 224, 230))
+        restart_surface.blit(restart_text, (10, 10))
+        # creates exit button
+        exit_surface = pygame.Surface((exit_text.get_size()[0] + 20, exit_text.get_size()[1] + 20))
+        exit_surface.fill((255, 204, 153))
+        exit_surface.blit(exit_text, (10, 10))
+        # button rectangles
+        reset_rect = reset_surface.get_rect(center=(170, 680))
+        restart_rect = restart_surface.get_rect(center=(320, 680))
+        exit_rect = exit_surface.get_rect(center=(455, 680))
+
+        # draw the buttons on the screen
+        self.screen.blit(reset_surface, reset_rect)
+        self.screen.blit(restart_surface, restart_rect)
+        self.screen.blit(exit_surface, exit_rect)
+
+        # draw the buttons on the screen
+        self.screen.blit(reset_surface, reset_rect)
+        self.screen.blit(restart_surface, restart_rect)
+        self.screen.blit(exit_surface, exit_rect)
+
+        while True:  # keeps the window open until the user exits.
+            # event handler
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.QUIT
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if exit_rect.collidepoint(event.pos):
+                        sys.exit()
+                    if restart_rect.collidepoint(event.pos):
+                        self.start_screen()
+                        return
+                    if reset_rect.collidepoint(event.pos):
+                        self.clear
+            pygame.display.update()
+
     def select(self, row, col):
         self.cells[row][col].selected = True
 
@@ -414,7 +464,9 @@ class Board:
         return row, col
 
     def clear(self):
-        pass
+        for i in range(9):
+            for j in range(9):
+                self.cells[i][j] = self.board[i][j]
 
     def sketch(self, value):
         pass
@@ -426,7 +478,7 @@ class Board:
         pass
 
     def is_full(self):
-        pass
+        return True
 
     def update_board(self):
         pass
@@ -435,16 +487,18 @@ class Board:
         pass
 
     def check_board(self):
-        return True
+        return False
 
-    def start_screen(screen):
+    def start_screen(self):
         title_font = pygame.font.Font(None, 150)  # title font
         button_font = pygame.font.Font(None, 40)  # button font
 
-        screen.fill((220, 220, 220))  # background color
+        background_image = pygame.image.load('sudoku_background_image.png')
+        #self.screen.fill((220, 220, 220))  # background color
         title_surface = title_font.render("Sudoku", 0, (199, 75, 120))
         title_rectangle = title_surface.get_rect(center=(305, 230))
-        screen.blit(title_surface, title_rectangle)  # render title
+        self.screen.blit(background_image, (0,0))
+        self.screen.blit(title_surface, title_rectangle)  # render title
 
         easy_text = button_font.render("Easy", 0, (255, 255, 240))
         medium_text = button_font.render("Medium", 0, (255, 255, 240))
@@ -475,39 +529,50 @@ class Board:
         quit_rect = quit_surface.get_rect(center=(300, 400))
 
         # draw the buttons
-        screen.blit(easy_surface, easy_rect)
-        screen.blit(medium_surface, medium_rect)
-        screen.blit(hard_surface, hard_rect)
-        screen.blit(quit_surface, quit_rect)
-        user_difficulty = 0
+        self.screen.blit(easy_surface, easy_rect)
+        self.screen.blit(medium_surface, medium_rect)
+        self.screen.blit(hard_surface, hard_rect)
+        self.screen.blit(quit_surface, quit_rect)
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if easy_rect.collidepoint(event.pos):
-                        user_difficulty = 30
-                        print(user_difficulty)
+                        self.difficulty = 30
+                        print(self.difficulty)
+                        return
                     elif medium_rect.collidepoint(event.pos):
-                        user_difficulty = 40
-                        print(user_difficulty)
+                        self.difficulty = 40
+                        print(self.difficulty)
+                        return
                     elif hard_rect.collidepoint(event.pos):
-                        user_difficulty = 50
-                        print(user_difficulty)
+                        self.difficulty = 50
+                        print(self.difficulty)
+                        return
                     elif quit_rect.collidepoint(event.pos):
                         sys.exit()
             pygame.display.update()
 
-    def draw_game_over_screen(player, screen):
-        screen.fill((220, 220, 220))
-        if player != 0:
-            end_text = f"You Win"
+    def draw_game_over_screen(self):
+        self.screen.fill((220, 220, 220))
+        if self.check_board():
+            end_text = "You Win"
         else:
-            end_text = "No one Wins"
-        game_over_font = pygame.font.Font(None, 40)
+            end_text = "You lose :("
+        game_over_font = pygame.font.Font(None, 100)
+        button_font = pygame.font.Font(None, 40)  # button font
+
         end_surf = game_over_font.render(end_text, 0, (199, 75, 120))
         end_rect = end_surf.get_rect(center=(305, 230))
-        screen.blit(end_surf, end_rect)
+        self.screen.blit(end_surf, end_rect)
+
+        restart_text = button_font.render("Restart", 0, (255, 255, 240))
+        restart_surface = pygame.Surface((restart_text.get_size()[0] + 20, restart_text.get_size()[1] + 20))
+        restart_surface.fill((255, 188, 217))
+        restart_surface.blit(restart_text, (10, 10))
+        restart_rect = restart_surface.get_rect(center=(300, 330))
+        self.screen.blit(restart_surface, restart_rect)
 
         while True:  # keeps the window open until the user exits.
             # event handler
@@ -515,5 +580,8 @@ class Board:
                 if event.type == pygame.QUIT:
                     pygame.QUIT
                     sys.exit()
-
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if restart_rect.collidepoint(event.pos):
+                        self.start_screen()
+                        return
             pygame.display.update()
