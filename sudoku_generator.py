@@ -333,7 +333,7 @@ class Board:
     width = 630
     board_height = 720
     game_height = 630
-    pink = (244, 194, 194)
+    pink = (251,224,231)
     num_rows = 9
     num_cols = 9
     cell_length = 70
