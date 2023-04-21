@@ -277,6 +277,7 @@ def generate_sudoku(size, removed):
     sudoku = SudokuGenerator(size, removed)  # develops the board for us.
     sudoku.fill_values()
     board = sudoku.get_board()
+    sudoku.print_board()
     sudoku.remove_cells()
     board = sudoku.get_board()
     # sudoku.print_board() # for testing purposes
@@ -477,26 +478,33 @@ class Board:
     def find_empty(self):
         pass
 
-    def is_valid(numbers):
-        return set(numbers) == set(range(1, 10))
+    def is_valid(self, numbers):
+        numbers.sort()
+        nums = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        return numbers == nums
+
     def check_board(self):
         # Check each row
         for row in self.cells:
-            for self.cell in row:
-                if not Board.is_valid(row):
-                    return False
+            cell_val = []
+            for cell in row:
+                cell_val.append(cell.value)
+            if not self.is_valid(cell_val):
+                print("row false")
+                return False
 
         # Check each column
         for i in range(9):
-            column = [self.cells[j][i] for j in range(9)]
-            if not Board.is_valid(column):
+            column = [self.cells[j][i].value for j in range(9)]
+            if not self.is_valid(column):
+                print("col false")
                 return False
 
         # Check each square
         for i in range(0, 9, 3):
             for j in range(0, 9, 3):
-                square = [self.cells[x][y] for x in range(i, i + 3) for y in range(j, j + 3)]
-                if not Board.is_valid(square):
+                square = [self.cells[x][y].value for x in range(i, i + 3) for y in range(j, j + 3)]
+                if not self.is_valid(square):
                     return False
 
         # If we get here, the board is valid
@@ -536,6 +544,7 @@ class Board:
         # return True
         '''
     def start_screen(self):
+
         title_font = pygame.font.Font(None, 150)  # title font
         button_font = pygame.font.Font(None, 40)  # button font
 
@@ -585,6 +594,7 @@ class Board:
                 if event.type == pygame.QUIT:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    board = Board(630, 630, self.difficulty)
                     if self.easy_rect.collidepoint(event.pos):
                         self.difficulty = 30
                         print(self.difficulty)
@@ -630,5 +640,6 @@ class Board:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if restart_rect.collidepoint(event.pos):
                         self.start_screen()
+
                         return
             pygame.display.update()

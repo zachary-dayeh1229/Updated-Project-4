@@ -6,7 +6,7 @@ import sys
 
 board = sudoku_generator.Board(630, 630, 0)  # displays the board.
 board.start_screen()
-board = sudoku_generator.Board(630, 630, 1)
+board = sudoku_generator.Board(630, 630, board.difficulty)
 board.draw()
 previous_click = [0, 0]  # initializes previous value
 
@@ -131,6 +131,7 @@ while True:  # keeps the window open until the user exits.
 
             if board.is_full():
                 board.draw_game_over_screen()
+                board = sudoku_generator.Board(630, 630, board.difficulty)
                 '''
                 # board.update_board()
                 if board.check_board() is True:
