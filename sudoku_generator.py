@@ -554,7 +554,7 @@ class Board:
         button_font = pygame.font.Font(None, 40)  # button font
 
         background_image = pygame.image.load('sudoku_background_image.png')
-        #self.screen.fill((220, 220, 220))  # background color
+        # self.screen.fill((220, 220, 220))  # background color
         title_surface = title_font.render("Sudoku", 0, (199, 75, 120))
         title_rectangle = title_surface.get_rect(center=(305, 230))
         self.screen.blit(background_image, (0,0))
