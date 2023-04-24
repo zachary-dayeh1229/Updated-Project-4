@@ -2,7 +2,9 @@ import math, random  # imports every file we need to make the project.
 import sys
 import pygame
 
+
 # hopefully this works.
+
 class SudokuGenerator:
 
     def __init__(self, row_length, removed_cells):  # Zack: initialize - default is 9 as sudoku is always 9x9
@@ -29,11 +31,22 @@ class SudokuGenerator:
     def get_board(self):  # Zack - basic get function
         return self.board
 
-    def print_board(self):  # Sanjana - prints the board properly/readable format
+    def print_board(self):  # Sanjana - prints the board properly
         for row in self.board:
             for col in row:
                 print(col, end=" ")
             print()
+
+    '''
+      Determines if num is contained in the specified row (horizontal) of the board
+      If num is already in the specified row, return False. Otherwise, return True
+
+      Parameters:
+      row is the index of the row we are checking
+      num is the value we are looking for in the row
+
+      Return: boolean
+      '''
 
     def valid_in_row(self, row, num):
         for i in range(self.col_length):
@@ -41,21 +54,55 @@ class SudokuGenerator:
                 return False
         return True
 
+    '''
+      Determines if num is contained in the specified column (vertical) of the board
+      If num is already in the specified col, return False. Otherwise, return True
+
+      Parameters:
+      col is the index of the column we are checking
+      num is the value we are looking for in the column
+
+      Return: boolean
+      '''
+
     def valid_in_col(self, col, num):
         for i in range(self.row_length):
             if self.board[i][col] == int(num):  # iterates over every col to check num.
                 return False
         return True
 
-    def valid_in_box(self, row_start, col_start, num):  # checks if all the numbers are valid in the box
+    '''
+      Determines if num is contained in the 3x3 box specified on the board
+      If num is in the specified box starting at (row_start, col_start), return False.
+      Otherwise, return True
+
+      Parameters:
+      row_start and col_start are the starting indices of the box to check
+      i.e. the box is from (row_start, col_start) to (row_start+2, col_start+2)
+      num is the value we are looking for in the box
+
+      Return: boolean
+      '''
+
+    def valid_in_box(self, row_start, col_start, num):
         for i in range(3):
             for j in range(3):  # iterates over box to check for num.
                 if self.board[row_start + i][col_start + j] == num:
                     return False
         return True
 
+    '''
+      Determines if it is valid to enter num at (row, col) in the board
+      This is done by checking that num is unused in the appropriate, row, column, and box
 
-    def is_valid(self, row, col, num): # checks if the board is valid
+      Parameters:
+      row and col are the row index and col index of the cell to check in the board
+      num is the value to test if it is safe to enter in this cell
+
+      Return: boolean
+      '''
+
+    def is_valid(self, row, col, num):
         # initialise row_start and col_start
         row_start = 0
         col_start = 0
@@ -94,6 +141,18 @@ class SudokuGenerator:
                     return True
         return False
 
+    '''
+      Fills the specified 3x3 box with values
+      For each position, generates a random digit which has not yet been used in the box
+
+      Parameters:
+      row_start and col_start are the starting indices of the box to check
+      i.e. the box is from (row_start, col_start) to (row_start+2, col_start+2)
+
+      Return: None
+
+    See below
+      '''
 
     def fill_box(self, row_start, col_start):  # chloe - fills a 3x3 box of 9 random numbers
         random_list = []
@@ -257,8 +316,7 @@ class Cell:
         if self.value != 0:  # if not == 0.
             empty_board = font.render(str(self.value), True, self.black)  # render text of element.
             cell_rect = empty_board.get_rect(center=(
-                self.row * self.cell_length + self.cell_length // 2,
-                self.col * self.cell_length + self.cell_length // 2))
+            self.row * self.cell_length + self.cell_length // 2, self.col * self.cell_length + self.cell_length // 2))
             self.screen.blit(empty_board, cell_rect)
 
         elif self.sketched_value != 0 and self.value == 0:  # if not == 0.
@@ -276,7 +334,7 @@ class Board:
     width = 630
     board_height = 720
     game_height = 630
-    pink = (251, 224, 231)
+    pink = (251,224,231)
     num_rows = 9
     num_cols = 9
     cell_length = 70
@@ -285,8 +343,7 @@ class Board:
     pygame.init()  # initialize pygame
     pygame.display.set_caption("Sudoku")  # give the terminal a title.
 
-    def __init__(self, width, height, difficulty,
-                 screen=pygame.display.set_mode((width, board_height))):  # initializes.
+    def __init__(self, width, height, difficulty, screen=pygame.display.set_mode((width, board_height))):  # initializes.
         self.width = width
         self.height = height
         self.screen = screen
@@ -345,6 +402,7 @@ class Board:
         self.reset_surface.fill((181, 229, 200))
         self.reset_surface.blit(self.reset_text, (10, 10))
 
+
         # creates restart button
         restart_surface = pygame.Surface((self.restart_text.get_size()[0] + 20, self.restart_text.get_size()[1] + 20))
         restart_surface.fill((176, 224, 230))
@@ -368,7 +426,21 @@ class Board:
         self.screen.blit(restart_surface, self.restart_rect)
         self.screen.blit(exit_surface, self.exit_rect)
 
-
+        # while True:  # keeps the window open until the user exits.
+        #     # event handler
+        #     for event in pygame.event.get():
+        #         if event.type == pygame.QUIT:
+        #             pygame.QUIT
+        #             sys.exit()
+        #         if event.type == pygame.MOUSEBUTTONDOWN:
+        #             if exit_rect.collidepoint(event.pos):
+        #                 sys.exit()
+        #             if restart_rect.collidepoint(event.pos):
+        #                 self.start_screen()
+        #                 return
+        #             if reset_rect.collidepoint(event.pos):
+        #                 self.clear
+        #     pygame.display.update()
     def select(self, row, col):
         self.cells[row][col].selected = True
 
@@ -444,15 +516,48 @@ class Board:
         return True
 
 
+        '''
+        our_list = []
+        #
+        # for row in completed_board:
+        #     for cell in row:
+        #         print(cell, end=" ")
+        #     print()
+        # print()
+
+        for row in self.cells:
+            row_list = []
+            for cell in row:
+                row_list.append(cell.value)
+            our_list.append(row_list)
+
+        for row in our_list:
+            for cell in row:
+                print(cell, end=" ")
+            print()
+        print()
+
+        # for i in range(9):
+        #     for j in range(9):
+        #         our_value = our_list[i][j]
+        #         print(our_value, end=" ")
+        #         completed_value = completed_board[i][j]
+        #         print(completed_value)
+        #         if our_value != completed_value:
+        #             print(False)
+        #             return False
+        # return True
+        '''
     def start_screen(self):
 
         title_font = pygame.font.Font(None, 150)  # title font
         button_font = pygame.font.Font(None, 40)  # button font
 
         background_image = pygame.image.load('sudoku_background_image.png')
+        # self.screen.fill((220, 220, 220))  # background color
         title_surface = title_font.render("Sudoku", 0, (199, 75, 120))
         title_rectangle = title_surface.get_rect(center=(305, 230))
-        self.screen.blit(background_image, (0, 0))
+        self.screen.blit(background_image, (0,0))
         self.screen.blit(title_surface, title_rectangle)  # render title
 
         easy_text = button_font.render("Easy", 0, (255, 255, 240))
@@ -514,7 +619,7 @@ class Board:
     def draw_game_over_screen(self):
         self.screen.fill((220, 220, 220))
         if self.check_board():
-            end_text = "You Win :)"
+            end_text = "You Win"
         else:
             end_text = "You lose :("
         game_over_font = pygame.font.Font(None, 100)
