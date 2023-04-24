@@ -277,7 +277,7 @@ def generate_sudoku(size, removed):
     sudoku = SudokuGenerator(size, removed)  # develops the board for us.
     sudoku.fill_values()
     board = sudoku.get_board()
-    sudoku.print_board()
+    # sudoku.print_board()
     sudoku.remove_cells()
     board = sudoku.get_board()
     # sudoku.print_board() # for testing purposes
@@ -602,15 +602,12 @@ class Board:
                     board = Board(630, 630, self.difficulty)
                     if self.easy_rect.collidepoint(event.pos):
                         self.difficulty = 30
-                        print(self.difficulty)
                         return
                     elif self.medium_rect.collidepoint(event.pos):
                         self.difficulty = 40
-                        print(self.difficulty)
                         return
                     elif self.hard_rect.collidepoint(event.pos):
                         self.difficulty = 50
-                        print(self.difficulty)
                         return
                     elif self.quit_rect.collidepoint(event.pos):
                         sys.exit()
