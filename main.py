@@ -115,7 +115,7 @@ while True:  # keeps the window open until the user exits.
                     board.cells[previous_click[0]][previous_click[1]].value = board.cells[previous_click[0]][previous_click[1]].sketched_value
                     board.draw()
 
-            if event.key == pygame.K_BACKSPACE:
+            if event.key == pygame.K_BACKSPACE:  # to delete
                 board.cells[previous_click[0]][previous_click[1]].sketched_value = 0
                 board.draw()
 
