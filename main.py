@@ -2,56 +2,39 @@ import pygame
 import sudoku_generator
 import sys
 
-# I hope this works.
 
-board = sudoku_generator.Board(630, 630, 0)  # displays the board.
-board.start_screen()
-board = sudoku_generator.Board(630, 630, board.difficulty)
+board = sudoku_generator.Board(630, 630, 0)  # creates a full board to run start_screen
+board.start_screen() # start screen
+board = sudoku_generator.Board(630, 630, board.difficulty)  # creates board with desired difficulty and draws it
 board.draw()
 previous_click = [0, 0]  # initializes previous value
 
 
 while True:  # keeps the window open until the user exits.
     # event handler
-
-    for event in pygame.event.get():  # if you exit the window.
-        if event.type == pygame.QUIT:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:  # if you exit the window
             pygame.QUIT()
             sys.exit()
         board.draw()
         if event.type == pygame.MOUSEBUTTONDOWN:  # if you click the mouse.
-            if board.exit_rect.collidepoint(event.pos):
+            if board.exit_rect.collidepoint(event.pos):  # exit button
                 sys.exit()
-            if board.restart_rect.collidepoint(event.pos):
+            if board.restart_rect.collidepoint(event.pos):  # restart button - brings back to start and new board
                 board.start_screen()
                 board = sudoku_generator.Board(630, 630, board.difficulty)
                 break
-            if board.reset_rect.collidepoint(event.pos):
+            if board.reset_rect.collidepoint(event.pos):  # resets user's changes to the board
                 board.clear()
-
-            # if board.easy_rect.collidepoint(event.pos):
-            #     board.difficulty = 30
-            #     print(board.difficulty)
-            #
-            # elif board.medium_rect.collidepoint(event.pos):
-            #     board.difficulty = 40
-            #     print(board.difficulty)
-            #
-            # elif board.hard_rect.collidepoint(event.pos):
-            #     board.difficulty = 50
-            #     print(board.difficulty)
-            #
-            # elif board.quit_rect.collidepoint(event.pos):
-            #     sys.exit()
-            x, y = event.pos
-            if y <= 630:
+            x, y = event.pos # click position
+            if y <= 630: # when board is clicked, bc the board is 630 x 630
                 board.cells[previous_click[0]][previous_click[1]].selected = False
                 row, col = board.click(x, y)
                 previous_click = [row, col]
                 board.draw()  # overwrites the box to something else.
 
         if event.type == pygame.KEYDOWN:  # if you select a key.
-
+            # sets up key functions down, up, right, and left
             if event.key == pygame.K_DOWN:  # if you select down.
                 board.cells[previous_click[0]][previous_click[1]].selected = False  # deselect.
                 if previous_click[0] == 8:  # if you reach the end of the board.
@@ -92,7 +75,6 @@ while True:  # keeps the window open until the user exits.
                 board.cells[previous_click[0]][previous_click[1]].sketched_value = 1
                 board.draw()
 
-
             if event.key == pygame.K_2 or event.key == pygame.K_KP2:
                 board.cells[previous_click[0]][previous_click[1]].sketched_value = 2
                 board.draw()
@@ -129,15 +111,9 @@ while True:  # keeps the window open until the user exits.
                 if board.cells[previous_click[0]][previous_click[1]].value == 0:
                     board.cells[previous_click[0]][previous_click[1]].value = board.cells[previous_click[0]][previous_click[1]].sketched_value
                     board.draw()
-
+            # if the user has finished the game by filling all the boxes
             if board.is_full():
-                board.draw_game_over_screen()
-                board = sudoku_generator.Board(630, 630, board.difficulty)
-                '''
-                # board.update_board()
-                if board.check_board() is True:
-                    print("True")
-                else:
-                    print("False") # lose
-                '''
+                board.draw_game_over_screen()  # calls the ending screen
+                board = sudoku_generator.Board(630, 630, board.difficulty)  # generates a new board with the difficulty
+
     pygame.display.update()  # updates all changes.
