@@ -115,6 +115,10 @@ while True:  # keeps the window open until the user exits.
                     board.cells[previous_click[0]][previous_click[1]].value = board.cells[previous_click[0]][previous_click[1]].sketched_value
                     board.draw()
 
+            if event.key == pygame.K_BACKSPACE:
+                board.cells[previous_click[0]][previous_click[1]].sketched_value = 0
+                board.draw()
+
             if board.is_full():  # check if board is full
                 board.draw_game_over_screen()  # begin game over sequence
                 board = sudoku_generator.Board(630, 630, board.difficulty)  # generate new board for next game
