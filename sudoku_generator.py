@@ -5,6 +5,19 @@ import pygame
 
 # hopefully this works.
 
+class Confetti(pygame.sprite.Sprite):
+    def __init__(self, x, y, colors):
+        super().__init__()
+        self.image = pygame.Surface((10, 10))
+        self.image.fill(random.choice(colors))
+        self.rect = self.image.get_rect(center=(x, y))
+        self.vel_x = random.randint(-5, 5)
+        self.vel_y = random.randint(-10, -5)
+        self.gravity = 0.04
+    def update(self):
+        self.rect.x += self.vel_x
+        self.rect.y += self.vel_y
+        self.vel_y += self.gravity
 class SudokuGenerator:
 
     def __init__(self, row_length, removed_cells):  # Zack: initialize - default is 9 as sudoku is always 9x9
@@ -339,6 +352,9 @@ class Board:
     num_cols = 9
     cell_length = 70
     red = (255, 0, 0)
+    white = (255, 255, 255)
+    yellow = (255, 255, 0)
+    magenta = (255, 0, 255)
 
     pygame.init()  # initialize pygame
     pygame.display.set_caption("Sudoku")  # give the terminal a title.
@@ -349,14 +365,11 @@ class Board:
         self.screen = screen
         self.difficulty = difficulty
         self.board = generate_sudoku(9, self.difficulty)
-        # for row in board: #for testing purposes
-        #     for col in row:
-        #         print(col, end=" ")
-        #     print()
         self.cells = []
         self.reset_rect = ""
         self.restart_rect = ""
         self.exit_rect = ""
+        self.confetti = []
 
         for i in range(9):
             row = []
@@ -426,21 +439,6 @@ class Board:
         self.screen.blit(restart_surface, self.restart_rect)
         self.screen.blit(exit_surface, self.exit_rect)
 
-        # while True:  # keeps the window open until the user exits.
-        #     # event handler
-        #     for event in pygame.event.get():
-        #         if event.type == pygame.QUIT:
-        #             pygame.QUIT
-        #             sys.exit()
-        #         if event.type == pygame.MOUSEBUTTONDOWN:
-        #             if exit_rect.collidepoint(event.pos):
-        #                 sys.exit()
-        #             if restart_rect.collidepoint(event.pos):
-        #                 self.start_screen()
-        #                 return
-        #             if reset_rect.collidepoint(event.pos):
-        #                 self.clear
-        #     pygame.display.update()
     def select(self, row, col):
         self.cells[row][col].selected = True
 
@@ -459,15 +457,6 @@ class Board:
                 self.cells[i][j].value = self.board[i][j]
                 self.cells[i][j].sketched_value = self.board[i][j]
 
-    def sketch(self, value):
-        pass
-
-    def place_number(self, value):
-        pass
-
-    def reset_to_original(self):
-        pass
-
     def is_full(self):
         for row in self.cells:
             for col in row:
@@ -480,8 +469,6 @@ class Board:
             for j in range(9):
                 self.board[i][j] = self.cells[i][j].value
 
-    def find_empty(self):
-        pass
 
     def is_valid(self, numbers):
         numbers.sort()
@@ -515,39 +502,6 @@ class Board:
         # If we get here, the board is valid
         return True
 
-
-        '''
-        our_list = []
-        #
-        # for row in completed_board:
-        #     for cell in row:
-        #         print(cell, end=" ")
-        #     print()
-        # print()
-
-        for row in self.cells:
-            row_list = []
-            for cell in row:
-                row_list.append(cell.value)
-            our_list.append(row_list)
-
-        for row in our_list:
-            for cell in row:
-                print(cell, end=" ")
-            print()
-        print()
-
-        # for i in range(9):
-        #     for j in range(9):
-        #         our_value = our_list[i][j]
-        #         print(our_value, end=" ")
-        #         completed_value = completed_board[i][j]
-        #         print(completed_value)
-        #         if our_value != completed_value:
-        #             print(False)
-        #             return False
-        # return True
-        '''
     def start_screen(self):
 
         title_font = pygame.font.Font(None, 150)  # title font
@@ -617,8 +571,14 @@ class Board:
         self.screen.fill((220, 220, 220))
         if self.check_board():
             end_text = "You Win"
+            colors = [(255, 0, 0), (255, 165, 0), (255, 51, 153), (255, 182, 193), (37, 208, 39), (0, 128, 0), (38, 206, 197), (214, 55, 255)]
+            confetti_group = pygame.sprite.Group()
+            for i in range(1000):
+                confetti = Confetti(random.randint(0, 600), random.randint(0, 400), colors)
+                confetti_group.add(confetti)
         else:
             end_text = "You lose :("
+
         game_over_font = pygame.font.Font(None, 100)
         button_font = pygame.font.Font(None, 40)  # button font
 
@@ -633,15 +593,26 @@ class Board:
         restart_rect = restart_surface.get_rect(center=(300, 330))
         self.screen.blit(restart_surface, restart_rect)
 
-        while True:  # keeps the window open until the user exits.
+        # New code added to slow down the confetti and make it disappear after 4 seconds
+        start_time = pygame.time.get_ticks()
+        confetti_group_lifetime = 9000  # 4 seconds in milliseconds
+
+        while pygame.time.get_ticks() - start_time < confetti_group_lifetime:
             # event handler
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.QUIT
+                    pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if restart_rect.collidepoint(event.pos):
                         self.start_screen()
-
                         return
+
+            self.screen.fill((220, 220, 220))
+            self.screen.blit(end_surf, end_rect)
+            self.screen.blit(restart_surface, restart_rect)
+
+            confetti_group.update()  # update the confetti particles
+            confetti_group.draw(self.screen)  # draw the confetti particles on the screen
             pygame.display.update()
+            pygame.time.delay(7)  # slowing down the confetti fall rate
